@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Category";
+}
+
+<h2>Categories</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in ViewBag.Categories)
+        {
+            <tr>
+                <th>@category.CategoryId</th>
+                <th>@category.CategoryName</th>
+            </tr>
+        }
+    </tbody>
+</table>
+

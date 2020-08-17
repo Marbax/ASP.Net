@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "Good";
+}
+
+<h2>Goods</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Manufacturer</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var good in ViewBag.Goods)
+        {
+            <tr>
+                <th>@good.GoodId</th>
+                <th>@good.GoodName</th>
+                @if (good.ManufacturerId > 0)
+                {
+                    <th data-toggle="tooltip" data-placement="top" title="Id = @good.ManufacturerId">@good.Manufacturer.ManufacturerName</th>
+                }
+                else
+                {
+                    <th>Unknown Manufacturer</th>
+                }
+                <th data-toggle="tooltip" data-placement="top" title="Id = @good.CategoryId">@(good.CategoryId > 0 ? @good.Category.CategoryName : "Unknown category")</th>
+                <th>@good.Price</th>
+                <th>@good.GoodCount</th>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

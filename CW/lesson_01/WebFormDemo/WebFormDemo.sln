@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEbFormSample", "WEbFormSample\WEbFormSample.csproj", "{99120B7A-4FFC-4E36-948D-08748A63F141}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99120B7A-4FFC-4E36-948D-08748A63F141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99120B7A-4FFC-4E36-948D-08748A63F141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99120B7A-4FFC-4E36-948D-08748A63F141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99120B7A-4FFC-4E36-948D-08748A63F141}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A158DB7-85B5-4AAA-9ED0-3B9F33AA996C}
+	EndGlobalSection
+EndGlobal

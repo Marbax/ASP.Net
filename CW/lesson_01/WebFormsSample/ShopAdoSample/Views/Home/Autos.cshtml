@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "Autos";
+}
+
+<h2>Autos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in ViewBag.Cars)
+        {
+            <tr>
+                <td>@car.Id</td>
+                <td>@car.Model</td>
+                <td>@car.Color</td>
+                <td>@car.Year</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Manufacturer";
+}
+
+<h2>Manufacturers</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manufacturer in ViewBag.Manufacturers)
+        {
+            <tr>
+                <th>@manufacturer.ManufacturerId</th>
+                <th>@manufacturer.ManufacturerName</th>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,25 @@
+﻿@using MVCPagination.Models
+@model IEnumerable<Manufacturer>
+
+@{
+    ViewBag.Title = "Manufacturers";
+    AjaxOptions options = new AjaxOptions
+    {
+        UpdateTargetId = "manufacturers"
+    };
+
+}
+
+<h2>Manufacturers</h2>
+
+<div style="margin-top: 50px;">
+    @for (int i = 0; i < ViewBag.Pages; i++)
+    {
+        @Ajax.ActionLink((i + 1).ToString(), "ManufacturersTable", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success mx-3" })
+    }
+</div>
+
+<div id="manufacturers">
+    @Html.Action("ManufacturersTable")
+</div>
+

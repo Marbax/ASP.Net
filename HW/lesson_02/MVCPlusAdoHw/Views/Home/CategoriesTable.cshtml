@@ -1,0 +1,19 @@
+﻿
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <th>@category.CategoryId</th>
+                <th>@category.CategoryName</th>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,27 @@
+﻿@using PaginationDemo.Models
+@model IEnumerable<Student>
+
+@{
+    ViewBag.Title = "Index";
+    AjaxOptions options = new AjaxOptions
+    {
+        UpdateTargetId = "students"
+    };
+}
+
+<h2>Home</h2>
+
+
+<div style="margin-top: 50px;">
+    @for (int i = 0; i < ViewBag.Pages; i++)
+    {
+        //<a href="/Home/Index/@(i+1)" class="btn btn-success">@(i + 1)</a>
+        //@Html.ActionLink((i+1).ToString(), "Index", "Home", new { id = i + 1}, new { @class="btn btn-success"})
+        @Ajax.ActionLink((i + 1).ToString(), "Table", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success" })
+    }
+</div>
+
+<div id="students">
+    @Html.Action("Table")
+</div>
+

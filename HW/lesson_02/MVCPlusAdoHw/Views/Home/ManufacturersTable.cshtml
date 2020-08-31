@@ -1,0 +1,19 @@
+﻿
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manufacturer in Model)
+        {
+            <tr>
+                <th>@manufacturer.ManufacturerId</th>
+                <th>@manufacturer.ManufacturerName</th>
+            </tr>
+        }
+    </tbody>
+</table>
+

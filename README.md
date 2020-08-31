@@ -16,3 +16,13 @@
 ---
 
 </p></details>
+
+<details><summary> 2.ASP.Net Pagination , Partial View. </summary><p>
+
+> - Строго типизированое представление , когда вью знает о модели
+> - Webpack , Gulp  - сжимают файлы кодаx
+
+[ASP MVC Pagination , Ajax , ACtions , Partial View example](CW/lesson_02/PaginationDemo "CW/lesson_02/PaginationDemo")   
+
+
+</p></details>

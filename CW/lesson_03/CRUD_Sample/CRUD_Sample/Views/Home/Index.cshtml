@@ -1,0 +1,36 @@
+﻿@model IEnumerable<CRUD_Sample.Models.Car>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<a href="/Home/Edit" class="btn btn-primary">Add</a>
+
+<h2>Cars</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+        <tr>
+            <td>@car.Id</td>
+            <td>@car.Title</td>
+            <td>@car.Model</td>
+            <td>@car.Year</td>
+            <td>
+                <a href="/Home/Delete/@car.Id" class="btn btn-danger">Delete</a>
+                <a href="/Home/Edit/@car.Id" class="btn btn-warning">Edit</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

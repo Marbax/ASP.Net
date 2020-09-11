@@ -1,0 +1,53 @@
+﻿@model CRUD_Sample.Models.Car
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+
+
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post))
+{
+    @*@Html.EditorForModel()*@
+
+    <div>
+        @*@Html.ValidationSummary()*@
+    </div>
+
+    @*<div class="form-group">
+        @Html.LabelFor(x => x.Id)
+        @Html.TextBoxFor(x => x.Id, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Id)
+    </div>*@
+    @Html.HiddenFor(x => x.Id)
+    <div class="form-group">
+        @Html.LabelFor(x => x.Title)
+        @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Title)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Model)
+        @Html.TextBoxFor(x => x.Model, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Model)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Year)
+        @Html.TextBoxFor(x => x.Year, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Year)
+    </div>
+    <div class="form-group">
+     
+        @Html.DropDownList("Items", new List<SelectListItem>
+   {
+       new SelectListItem {Text = "Hello", Value = "1"},
+       new SelectListItem {Text = "Bye", Value = "2"},
+       new SelectListItem {Text = "Monday", Value = "2"}
+   })
+     
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Submit" />
+}

@@ -1,0 +1,41 @@
+﻿@model  MVCPagination.Models.Good
+
+@{
+    ViewBag.Title = "EditGood";
+}
+
+<h2>Edit Good</h2>
+
+@using (Html.BeginForm("EditGood", "Home", FormMethod.Post))
+{
+    @Html.HiddenFor(i => i.GoodId)
+    <div class="form-group">
+        @Html.LabelFor(i => i.GoodName)
+        @Html.TextBoxFor(x => x.GoodName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.GoodName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Manufacturer)
+        @Html.TextBoxFor(x => x.Manufacturer, new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.Manufacturer.ManufacturerName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Category.CategoryName)
+        @Html.TextBoxFor(x => x.Category.CategoryName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.Category.CategoryName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.Price)
+        @Html.TextBoxFor(x => x.Price, new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.Price)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(i => i.GoodCount)
+        @Html.TextBoxFor(x => x.GoodCount, new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.GoodCount)
+    </div>
+
+    //@Html.EditorForModel(Model)
+
+    <input type="submit" class="btn btn-primary m-1" value="Submit" />
+}

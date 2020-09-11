@@ -12,10 +12,12 @@
 
 <h2>Goods</h2>
 
+<a href="/Home/EditGood" class="btn-info m-1">Add Good</a>
+
 <div style="margin-top: 50px;">
     @for (int i = 0; i < ViewBag.Pages; i++)
     {
-        @Ajax.ActionLink((i + 1).ToString(), "GoodsTable", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success mx-3", @style = "margin: \"12px\"" })
+        @Ajax.ActionLink((i + 1).ToString(), "GoodsTable", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success mx-1" })
     }
 </div>
 

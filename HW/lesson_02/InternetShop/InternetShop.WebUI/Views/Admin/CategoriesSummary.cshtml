@@ -1,0 +1,38 @@
+﻿@model IEnumerable<InternetShop.Domain.Entities.Category>
+
+@{
+    ViewBag.Title = "Categories";
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="Message alert-info rounded">@TempData["message"]</div>
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryName)
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        @Ajax.ActionLink("Edit", "EditCategory", new { catId = item.CategoryId }, new AjaxOptions { UpdateTargetId = "categoryModalDialog" }, new { @class = "btn btn-sm btn-warning m-1", data_toggle = "modal", data_target = "#categoryModal" })
+                        @Ajax.ActionLink("Delete", "DeleteCategory", new { catId = item.CategoryId }, new AjaxOptions { UpdateTargetId = "categoryModalDialog" }, new { @class = "btn btn-sm btn-danger m-1", data_toggle = "modal", data_target = "#categoryModal" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<InternetShop.Domain.Entities.Manufacturer>
+
+@{
+    ViewBag.Title = "Manufacturers";
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="Message alert-info rounded">@TempData["message"]</div>
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ManufacturerName)
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ManufacturerName)
+                    </td>
+                    <td>
+                        @Ajax.ActionLink("Edit", "EditManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-warning m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
+                        @Ajax.ActionLink("Delete", "DeleteManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-danger m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

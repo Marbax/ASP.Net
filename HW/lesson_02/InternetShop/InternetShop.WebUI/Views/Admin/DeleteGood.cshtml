@@ -1,0 +1,45 @@
+﻿@model InternetShop.Domain.Entities.Good
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to delete <b>@Model.GoodName</b> ?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <hr />
+        <div class="modal-body justify-content-center">
+            <form>
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.GoodName)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.GoodName)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Price)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.GoodCount)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.GoodCount)
+                    </dd>
+                </dl>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-primary m-1" />
+                <button type="button" class="btn btn-secondary m-1" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+}

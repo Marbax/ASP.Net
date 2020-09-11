@@ -7,32 +7,38 @@
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
-    <style>
-        .centerItem{
-            margin: 8px 8px !important;
-        }
-    </style>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container p-3">
-            <div class="navbar-header d-flex justify-content-center">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarCollapse">
-                <ul class="navbar-nav d-flex justify-content-center list-unstyled">
-                    <li class="nav-item">@Html.ActionLink("Goods", "Good", "Home", new { area = "" }, new { @class = "nav-link centerItem" })</li>
-                    <li class="nav-item">@Html.ActionLink("Categories", "Category", "Home", new { area = "" }, new { @class = "nav-link centerItem" })</li>
-                    <li class="nav-item">@Html.ActionLink("Manufacturerers", "Manufacturer", "Home", new { area = "" }, new { @class = "nav-link centerItem" })</li>
+
+    <!--_NAV_-->
+    <div class="navContainer bg-dark py-0 mt-0">
+        <nav class="container-xl navbar navbar-expand-xl navbar-light py-0">
+            @Html.ActionLink("Internet Shop", "Index", "Home", new { area = "" }, new { @class = "navbar-brand mx-auto font-weight-bolder ml-xl-0 text-light" })
+            <button class="navbar-toggler collapsed bg-light" type="button" data-toggle="collapse"
+                    data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-md-center text-sm-center" id="navbarCollapse">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link text-light" })</li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Tables
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @Html.ActionLink("Goods", "Good", "Home", new { area = "" }, new { @class = "nav-link text-dark" })
+                            @Html.ActionLink("Categories", "Category", "Home", new { area = "" }, new { @class = "nav-link text-dark" })
+                            @Html.ActionLink("Manufacturerers", "Manufacturer", "Home", new { area = "" }, new { @class = "nav-link text-dark" })
+                        </div>
+                    </li>
                 </ul>
             </div>
-        </div>
+        </nav>
     </div>
+    <!--_NAV_END_-->
+
+
 
     <div class="container body-content">
         @RenderBody()

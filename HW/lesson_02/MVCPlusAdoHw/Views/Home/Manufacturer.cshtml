@@ -15,7 +15,7 @@
 <div style="margin-top: 50px;">
     @for (int i = 0; i < ViewBag.Pages; i++)
     {
-        @Ajax.ActionLink((i + 1).ToString(), "ManufacturersTable", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success mx-3" })
+        @Ajax.ActionLink((i + 1).ToString(), "ManufacturersTable", "Home", new { id = i + 1 }, options, new { @class = "btn btn-success mx-1" })
     }
 </div>
 

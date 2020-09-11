@@ -1,33 +1,40 @@
 ﻿
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Manufacturer</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Count</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var good in Model)
-        {
+<div class="table-responsive">
+    <table class="table">
+        <thead>
             <tr>
-                <th>@good.GoodId</th>
-                <th>@good.GoodName</th>
-                @if (good.ManufacturerId > 0)
-                {
-                    <th data-toggle="tooltip" data-placement="top" title="Id = @good.ManufacturerId">@good.Manufacturer.ManufacturerName</th>
-                }
-                else
-                {
-                    <th>Unknown Manufacturer</th>
-                }
-                <th data-toggle="tooltip" data-placement="top" title="Id = @good.CategoryId">@(good.CategoryId > 0 ? @good.Category.CategoryName : "Unknown category")</th>
-                <th>@good.Price</th>
-                <th>@good.GoodCount</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Manufacturer</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Count</th>
+                <th>Action</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var good in Model)
+            {
+                <tr>
+                    <td>@good.GoodId</td>
+                    <td>@good.GoodName</td>
+                    @if (good.ManufacturerId > 0)
+                    {
+                        <td data-toggle="tooltip" data-placement="top" title="Id = @good.ManufacturerId">@good.Manufacturer.ManufacturerName</td>
+                    }
+                    else
+                    {
+                        <td>Unknown Manufacturer</td>
+                    }
+                    <td data-toggle="tooltip" data-placement="top" title="Id = @good.CategoryId">@(good.CategoryId > 0 ? @good.Category.CategoryName : "Unknown category")</td>
+                    <td>@good.Price</td>
+                    <td>@good.GoodCount</td>
+                    <td>
+                        <a href="/Home/DeleteGood/@good.GoodId" class="btn-danger">Delete</a>
+                        <a href="/Home/EditGood/@good.GoodId" class="btn-warning">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,37 @@
+﻿@using InternetShop.WebUI.Models
+@model ManufacturersListViewModel
+
+@{
+    ViewBag.Title = "Manufacturers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex my-1 justify-content-center">
+    @for (int i = 0; i < Model.PagingInfo.TotalPages; i++)
+    {
+        @Ajax.ActionLink(
+       (i + 1).ToString(),
+       "ManufacturersSummary",
+       "Admin",
+       new
+            {
+                page = i + 1
+            },
+       new AjaxOptions
+    {
+        UpdateTargetId = "manufacturers"
+    },
+       new { @class = "btn btn-info mx-1 my-2" })
+    }
+</div>
+
+<div class="modal fade" id="manufacturerModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="manufacturerModalDialog" class="modal-dialog" role="document">
+    </div>
+</div>
+
+@Ajax.ActionLink("Create New", "CreateManufacturer", null, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-success m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
+
+<div id="manufacturers" class="mx-auto">
+    @{Html.RenderPartial("ManufacturersSummary", Model.Manufacturers);}
+</div>

@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    @using (Html.BeginForm("Upload", "Files", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="fileUpload" multiple />
+        <input type="submit" value="Upload" />
+    }
+</div>
+
+<div>
+    <ul class="list-group">
+        @foreach (var item in ViewBag.Files)
+        {
+            <li class="list-group-item">
+                <a href="/Files/Download?fn=@Path.GetFileName(item)">
+                    @Path.GetFileName(item)
+                </a>
+               
+            </li>
+        }
+    </ul>
+</div>

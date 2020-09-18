@@ -1,0 +1,33 @@
+﻿@model IEnumerable<DAL.Context.Good>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>GoodId</th>
+            <th>GoodName</th>
+            <th>Price</th>
+            <th>CategoryName</th>
+            <th>ManufacturerName</th>
+            <th>GoodCount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var good in Model)
+        {
+        <tr>
+            <td>@good.GoodId</td>
+            <td>@good.GoodName</td>
+            <td>@good.Price</td>
+            <td>@(good.Category?.CategoryName)</td>
+            <td>@(good.Manufacturer?.ManufacturerName)</td>
+            <td>@(good.GoodCount)</td>
+        </tr>
+        }
+
+    </tbody>
+</table>

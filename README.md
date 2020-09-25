@@ -36,8 +36,6 @@
 
 <details><summary> 4.ASP.Net DI Ninject. </summary><p>
 
-> Сделать коллекцию фоток в товаре , у фотки убрать нулабл идишник товара 
-
 [ASP MVC DI , ninject ](CW/lesson_04/DI_FileUpload "CW/lesson_04/DI_FileUpload")
 
 [ASP MVC DI , ninject , photos uploading ](HW/lesson_04/InternetShop "HW/lesson_04/InternetShop")
@@ -45,3 +43,14 @@
 [JS privat publick api , promise , html gen example ](HW/lesson_04/InternetShop/InternetShop.WebUI/Scripts/privatCourse.js "HW/lesson_04/InternetShop/InternetShop.WebUI/Scripts/privatCourse.js")
 
 </p></details>
+
+<details><summary> 5.ASP.Net View Model , Filtetrs. </summary><p>
+
+[ASP MVC VM example ](CW/lesson_05/Lesson_VM "CW/lesson_05/Lesson_VM")
+
+[ASP MVC Filters , LinqKit example ](CW/lesson_05/Lesson_Filters "CW/lesson_05/Lesson_Filters")
+
+[ASP MVC Filters , VMs uploading ](HW/lesson_04/InternetShop "HW/lesson_04/InternetShop")
+
+</p></details>
+

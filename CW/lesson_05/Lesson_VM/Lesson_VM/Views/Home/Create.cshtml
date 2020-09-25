@@ -1,0 +1,34 @@
+﻿@model Lesson_VM.Models.ViewModels.GoodViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.LabelFor(x => x.GoodName)
+        @Html.TextBoxFor(x => x.GoodName)
+    </div>
+
+    <div>
+        @Html.LabelFor(x => x.Price)
+        @Html.TextBoxFor(x => x.Price)
+    </div>
+
+    <div>
+        @Html.LabelFor(x => x.GoodCount)
+        @Html.TextBoxFor(x => x.GoodCount)
+    </div>
+
+    <div>
+        @Html.LabelFor(x => x.Categories)
+        @Html.DropDownListFor(x => x.CategoryId, Model.Categories)
+    </div>
+
+
+
+
+    <input type="submit" />
+}

@@ -1,0 +1,42 @@
+﻿@using Lesson_9._2_Predicate_filter.Models;
+@model GoodsViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<table class="table">
+    <tr>
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+        {
+            <th>
+            </th>
+            <th>
+            </th>
+            <th>
+                @for (int i = 0; i < Model.Filters.Count(); i++)
+                {
+                    @Html.HiddenFor(x => x.Filters[i].From)
+                    @Html.HiddenFor(x => x.Filters[i].To)
+                    @Html.CheckBoxFor(x => x.Filters[i].IsChecked)
+                    @: @Html.DisplayTextFor(x => x.Filters[i].From) - @Html.DisplayTextFor(x => x.Filters[i].To)
+                }
+            </th>
+            <th>
+                <input type="submit" />
+            </th>
+            
+        }
+    </tr>
+    @foreach (Good good in Model.Goods)
+    {
+    <tr>
+        <td>@good.GoodId</td>
+        <td>@good.GoodName</td>
+        <td>@good.Price</td>
+        <td>@good.GoodCount</td>
+    </tr>
+    }
+</table>

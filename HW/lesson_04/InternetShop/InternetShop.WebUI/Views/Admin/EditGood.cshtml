@@ -1,6 +1,6 @@
-﻿@model InternetShop.WebUI.Models.GoodEditViewModel
+﻿@model InternetShop.WebUI.Models.GoodViewModel
 
-@using (Ajax.BeginForm("EditGood", "Admin", new AjaxOptions() { UpdateTargetId = "goodModalDialog" }, new { enctype = "multipart/form-data" }))
+@using (Ajax.BeginForm("EditGood", "Admin", new AjaxOptions() { UpdateTargetId = "goodModalDialog", HttpMethod = "Post" }, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="modal-content">
@@ -13,55 +13,53 @@
         <hr />
         <div class="modal-body">
             <form class="justify-content-center">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.Good.GoodId)
-
+                @Html.HiddenFor(model => model.GoodId)
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.GoodName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.GoodName, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.Good.GoodName, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Good.GoodName, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.GoodName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.GoodName, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.Photos, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.Photos, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputFiles" name="fileUpload" multiple>
+                            <input type="file" class="custom-file-input" id="inputFiles" name="Photos" multiple>
                             <label class="custom-file-label" for="inputFiles">Add photos</label>
                         </div>
-                        @Html.ValidationMessageFor(model => model.Good.Photos, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Photos, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.Manufacturer, "Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.Manufacturers, "Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.Good.ManufacturerId, new SelectList(Model.Manufacturers, nameof(Model.Good.Manufacturer.ManufacturerId), nameof(Model.Good.Manufacturer.ManufacturerName), Model.Good.ManufacturerId), htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.ManufacturerId, Model.Manufacturers, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.Category, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.Categories, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.Good.CategoryId, new SelectList(Model.Categories, nameof(Model.Good.Category.CategoryId), nameof(Model.Good.Category.CategoryName), Model.Good.CategoryId), htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.CategoryId, Model.Categories, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.GoodPrice, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.Good.Price, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Good.Price, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.GoodPrice, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.GoodPrice, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Good.GoodCount, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.GoodCount, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.Good.GoodCount, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Good.GoodCount, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.GoodCount, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.GoodCount, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </form>

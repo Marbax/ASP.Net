@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using LinqKit;
+using System.Linq.Expressions;
 
 namespace InternetShop.Domain.Concrete
 {
@@ -32,7 +34,7 @@ namespace InternetShop.Domain.Concrete
 
         public T Get(int id) => _dbSet.Find(id);
 
-        public IEnumerable<T> Get(Func<T, bool> predicate) => _dbSet.Where(predicate);
+        public IEnumerable<T> Get(Expression<Func<T, bool>> predicate) => _dbSet.AsNoTracking<T>().Where(predicate);
 
         public IEnumerable<T> GetAll() => _dbSet;
     }

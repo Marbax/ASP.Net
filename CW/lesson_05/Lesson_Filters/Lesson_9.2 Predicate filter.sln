@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lesson_9.2 Predicate filter", "Lesson_9.2 Predicate filter\Lesson_9.2 Predicate filter.csproj", "{E28CAF54-7943-4091-9665-AB2F4F8E305B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp10", "D:\Projects\ConsoleApp10\ConsoleApp10.csproj", "{A194127C-5617-4214-AEB2-916ADE8CAFDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E28CAF54-7943-4091-9665-AB2F4F8E305B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E28CAF54-7943-4091-9665-AB2F4F8E305B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E28CAF54-7943-4091-9665-AB2F4F8E305B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E28CAF54-7943-4091-9665-AB2F4F8E305B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A194127C-5617-4214-AEB2-916ADE8CAFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A194127C-5617-4214-AEB2-916ADE8CAFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A194127C-5617-4214-AEB2-916ADE8CAFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A194127C-5617-4214-AEB2-916ADE8CAFDC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2E876A7-FE46-4987-AFB6-16ACC69193D1}
+	EndGlobalSection
+EndGlobal

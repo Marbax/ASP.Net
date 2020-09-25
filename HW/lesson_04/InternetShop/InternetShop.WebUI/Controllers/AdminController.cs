@@ -1,6 +1,7 @@
 ﻿using InternetShop.Domain.Abstract;
 using InternetShop.Domain.Entities;
 using InternetShop.WebUI.Models;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,16 @@ namespace InternetShop.WebUI.Controllers
     //    Размер файла - не более 5 Мб.                                                                                  +
     //    При просмотре таблицы со списком товаров, также должна отображаться уменьшенная фотография возле него.         +
     //    Есть возможность загрузить сколько угодно фотографий для товара.                                               +
-    //    Добавьте в правом углу страницы виджет, который отображает текущий курс валют банка Приват.(API на сайте банка есть). +
+    //    Добавьте в правом углу страницы виджет, который отображает текущий курс валют банка Приват.                    +
+    //           (API на сайте банка есть).                                                                              +
+    //--------------------------------------------------------------------------------------------------------------------
+    //    Добавить слой DAL в проекте.                                                                                   +
+    //    Реализовать ViewModels для представлений, связанных с добавлением/редактированием сущностей.                   +
+    //    В итоге у нас есть возможность выполнять CRUD операции над всеми сущностями БД.                                +
+    //--------------------------------------------------------------------------------------------------------------------
+    //    Реализовать фильтрацию товаров по цене, по категории, по производителю.                                        +
+    //    Цену пользователь вводит ОТ и ДО.                                                                              +
+    //--------------------------------------------------------------------------------------------------------------------
     /// </summary>
     public class AdminController : Controller
     {
@@ -69,53 +79,87 @@ namespace InternetShop.WebUI.Controllers
         }
 
         #region Goods
-        public ActionResult Index(string category, string manufacturer, int page = 1) => RedirectToAction("Goods", new { category, manufacturer, page });
-        public ActionResult Goods(string category, string manufacturer, int page = 1)
+        public RedirectToRouteResult Index(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue) => RedirectToAction("Goods", new { category, manufacturer, page, from, to });
+        public ViewResult Goods(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue) // старый фильтр не пашет 
         {
-            GoodsListViewModel model = new GoodsListViewModel
+            GoodsListViewModel newGoodVM = GetGoodVM(category, manufacturer, page, from, to);
+
+            return View(newGoodVM);
+        }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Goods(GoodsListViewModel goodVM)
+        {
+            var newGoodsVM = GetGoodVM(goodVM.CurrentCategory, goodVM.CurrentManufacturer, goodVM.PagingInfo.CurrentPage, goodVM.Filter.From, goodVM.Filter.To);
+
+            return View(newGoodsVM);
+        }
+        public PartialViewResult GoodSummary(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue)
+        {
+            var newGoodsVM = GetGoodVM(category, manufacturer, page, from, to);
+
+            return PartialView(newGoodsVM);
+        }
+        private GoodsListViewModel GetGoodVM(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue)
+        {
+            var predicate = PredicateBuilder.New<Good>();
+            var pred = PredicateBuilder.New<Good>();
+            pred.And(i => category == null || i.Category.CategoryName.Contains(category));
+            pred.And(i => manufacturer == null || i.Manufacturer.ManufacturerName.Contains(manufacturer));
+            pred.And(i => from == default || i.Price >= from);
+            pred.And(i => from == decimal.MaxValue || i.Price <= to);
+
+            predicate.Extend(pred, PredicateOperator.Or);
+
+            var goods = _goodsRepo.Get(predicate).ToList();
+            var count = goods.Count();
+
+            GoodsListViewModel goodVM = new GoodsListViewModel
             {
-                Goods = _goodsRepo.Get(i => category == null || i.Category.CategoryName == category && manufacturer == null || i.Manufacturer.ManufacturerName == manufacturer)
+                Goods = goods
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = PageSize,
-                    TotalItems = GetItemsCount(category, manufacturer)
+                    TotalItems = count
                 },
                 CurrentCategory = category,
                 CurrentManufacturer = manufacturer
             };
 
-            return View(model);
+            return goodVM;
         }
-        public ActionResult GoodSummary(string category, string manufacturer, int page = 1)
-        {
-            return PartialView(_goodsRepo.Get(i => category == null || i.Category.CategoryName == category && manufacturer == null || i.Manufacturer.ManufacturerName == manufacturer)
-                    .Skip((page - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList());
-        }
+
         public ActionResult CreateGood()
         {
-            return PartialView("EditGood", new GoodEditViewModel() { Good = new Good(), Categories = _catRepo.GetAll(), Manufacturers = _manufRepo.GetAll() });
+            return PartialView("EditGood", new GoodViewModel(default, default, default, default, default, default, _catRepo.GetAll(), _manufRepo.GetAll()));
         }
-        public PartialViewResult EditGood(int goodId)
+        public ActionResult EditGood(int goodId)
         {
             Good good = _goodsRepo.Get(goodId);
-            return PartialView(new GoodEditViewModel() { Good = good, Categories = _catRepo.GetAll(), Manufacturers = _manufRepo.GetAll() });
+            return PartialView(new GoodViewModel(good.GoodId, good.GoodName, good.Price, good.GoodCount, good.CategoryId, good.ManufacturerId, _catRepo.GetAll(), _manufRepo.GetAll()));
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditGood(Good good, IEnumerable<HttpPostedFileBase> fileUpload = null)
+        public ActionResult EditGood(GoodViewModel goodVM)
         {
             if (ModelState.IsValid)
             {
+                Good good = _goodsRepo.Get(goodVM.GoodId);
+                if (good == null)
+                    good = new Good();
+                good.GoodName = goodVM.GoodName;
+                good.Price = goodVM.GoodPrice;
+                good.GoodCount = goodVM.GoodCount;
+                good.CategoryId = goodVM.CategoryId;
+                good.ManufacturerId = goodVM.ManufacturerId;
+
                 StringBuilder sb = new StringBuilder("");
-                if (fileUpload != null)
+                if (goodVM.Photos != null)
                 {
-                    sb.Append($"Invalid files , these files weren't added:");
-                    foreach (var item in fileUpload)
+                    foreach (var item in goodVM.Photos)
                     {
                         if (item.ContentLength / 1000 < 5000 && MimeMapping.GetMimeMapping(item.FileName).Contains("image/"))
                         {
@@ -125,15 +169,16 @@ namespace InternetShop.WebUI.Controllers
                             _photosRepo.CreateOrUpdate(ph);
                         }
                         else
-                            sb.Append($"\"{item.FileName}\" ");
+                            sb.Append($"Invalid file:\"{item.FileName}\" ");
                     }
                 }
                 _goodsRepo.CreateOrUpdate(good);
-                TempData["message"] = $"{good.GoodName} successfully saved.{sb.ToString()}";
-                return new JavaScriptResult() { Script = "$('#goodModal').modal('hide');window.location.href = '/Admin/Goods';" };
+                TempData["message"] = $"{goodVM.GoodName} successfully saved.{sb.ToString()}";
+                return new JavaScriptResult() { Script = "window.location.href = '/Admin/Goods';" };
             }
             else
-                return PartialView("EditGood", new GoodEditViewModel() { Good = good, Categories = _catRepo.GetAll(), Manufacturers = _manufRepo.GetAll() });
+                return PartialView(new GoodViewModel(goodVM.GoodId, goodVM.GoodName, goodVM.GoodPrice, goodVM.GoodCount, goodVM.CategoryId, goodVM.ManufacturerId, _catRepo.GetAll(), _manufRepo.GetAll(), goodVM.Photos));
+            // при валидации фотки выбранные ранее передаются в ВМ , но из нее не передаются в вьюху
         }
         public ActionResult DeleteGood(int goodId)
         {
@@ -172,22 +217,6 @@ namespace InternetShop.WebUI.Controllers
             }
 
         }
-        private int GetItemsCount(string category, string manufacturer)
-        {
-            int items = 0;
-            if (category == null && manufacturer == null)
-                items = _goodsRepo.GetAll().Count();
-            else
-            {
-                if (category != null && manufacturer != null)
-                    items = _goodsRepo.Get(e => e.Category.CategoryName == category && e.Manufacturer.ManufacturerName == manufacturer).Count();
-                else if (category != null)
-                    items = _goodsRepo.Get(e => e.Category.CategoryName == category).Count();
-                else
-                    items = _goodsRepo.Get(e => e.Manufacturer.ManufacturerName == manufacturer).Count();
-            }
-            return items;
-        }
         #endregion
 
 
@@ -212,25 +241,30 @@ namespace InternetShop.WebUI.Controllers
         }
         public PartialViewResult CreateCategory()
         {
-            return PartialView("EditCategory", new Category());
+            return PartialView("EditCategory", new CategoryViewModel());
         }
         public PartialViewResult EditCategory(int catId)
         {
             Category cat = _catRepo.Get(catId);
-            return PartialView(cat);
+            return PartialView(new CategoryViewModel() { CategoryId = cat.CategoryId, CategoryName = cat.CategoryName });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCategory(Category category)
+        public ActionResult EditCategory(CategoryViewModel categoryVM)
         {
             if (ModelState.IsValid)
             {
-                _catRepo.CreateOrUpdate(category);
-                TempData["message"] = $"{category.CategoryName} successfully saved.";
+                Category cat = _catRepo.Get(categoryVM.CategoryId);
+                if (cat == null)
+                    cat = new Category();
+                cat.CategoryName = categoryVM.CategoryName;
+
+                _catRepo.CreateOrUpdate(cat);
+                TempData["message"] = $"{cat.CategoryName} successfully saved.";
                 return new JavaScriptResult() { Script = "$('#categoryModal').modal('hide');window.location.href = '/Admin/Categories';" };
             }
             else
-                return PartialView("EditCategory", category);
+                return PartialView("EditCategory", categoryVM);
         }
         public ActionResult DeleteCategory(int catId)
         {
@@ -279,25 +313,30 @@ namespace InternetShop.WebUI.Controllers
         }
         public PartialViewResult CreateManufacturer()
         {
-            return PartialView("EditManufacturer", new Manufacturer());
+            return PartialView("EditManufacturer", new ManufacturerViewModel());
         }
         public PartialViewResult EditManufacturer(int manId)
         {
             Manufacturer man = _manufRepo.Get(manId);
-            return PartialView(man);
+            return PartialView(new ManufacturerViewModel() { ManufacturerId = man.ManufacturerId, ManufacturerName = man.ManufacturerName });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditManufacturer(Manufacturer manufacturer)
+        public ActionResult EditManufacturer(ManufacturerViewModel manufacturerVM)
         {
             if (ModelState.IsValid)
             {
-                _manufRepo.CreateOrUpdate(manufacturer);
-                TempData["message"] = $"{manufacturer.ManufacturerName} successfully saved.";
+                Manufacturer man = _manufRepo.Get(manufacturerVM.ManufacturerId);
+                if (man == null)
+                    man = new Manufacturer();
+                man.ManufacturerName = manufacturerVM.ManufacturerName;
+
+                _manufRepo.CreateOrUpdate(man);
+                TempData["message"] = $"{man.ManufacturerName} successfully saved.";
                 return new JavaScriptResult() { Script = "$('#manufacturerModal').modal('hide');window.location.href = '/Admin/Manufacturers';" };
             }
             else
-                return PartialView("EditCategory", manufacturer);
+                return PartialView("EditManufacturer", manufacturerVM);
         }
         public ActionResult DeleteManufacturer(int manId)
         {
@@ -323,5 +362,6 @@ namespace InternetShop.WebUI.Controllers
             }
         }
         #endregion
+
     }
 }

@@ -57,6 +57,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="LinqKit, Version=1.1.17.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqKit.1.1.17\lib\net45\LinqKit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.14.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.14.5\lib\net45\Moq.dll</HintPath>
@@ -154,9 +157,11 @@
     <Compile Include="Infrastructure\NinjectControllerFactory.cs" />
     <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\CategoriesListViewModel.cs" />
-    <Compile Include="Models\GoodEditViewModel.cs" />
+    <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\GoodsListViewModel.cs" />
+    <Compile Include="Models\GoodViewModel.cs" />
     <Compile Include="Models\ManufacturersListViewModel.cs" />
+    <Compile Include="Models\ManufacturerViewModel.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -307,7 +312,6 @@
     <Content Include="Views\Admin\Goods.cshtml" />
     <Content Include="Views\Admin\GoodSummary.cshtml" />
     <Content Include="Views\Admin\DeleteGood.cshtml" />
-    <Content Include="Views\Admin\EditGood.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Categories.cshtml" />
     <Content Include="Views\Admin\CategoriesSummary.cshtml" />
@@ -317,6 +321,7 @@
     <Content Include="Views\Admin\ManufacturersSummary.cshtml" />
     <Content Include="Views\Admin\EditManufacturer.cshtml" />
     <Content Include="Views\Admin\DeleteManufacturer.cshtml" />
+    <Content Include="Views\Admin\EditGood.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace InternetShop.Domain.Abstract
 {
@@ -7,7 +8,7 @@ namespace InternetShop.Domain.Abstract
     {
         IEnumerable<T> GetAll();
         T Get(int id);
-        IEnumerable<T> Get(Func<T, bool> predicate);
+        IEnumerable<T> Get(Expression<Func<T, bool>> predicate);
         void CreateOrUpdate(T entity);
         void Delete(T entity);
     }

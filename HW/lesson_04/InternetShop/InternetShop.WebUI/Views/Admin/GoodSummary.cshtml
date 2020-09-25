@@ -1,4 +1,5 @@
-﻿@model IEnumerable<InternetShop.Domain.Entities.Good>
+﻿@using InternetShop.WebUI.Models
+@model GoodsListViewModel
 
 @{
     ViewBag.Title = "Goods";
@@ -9,45 +10,34 @@
     <div class="Message alert-info rounded">@TempData["message"]</div>
 }
 
+
 <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.GoodName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Photos)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Category.CategoryName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Manufacturer.ManufacturerName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.GoodCount)
-                </th>
+                <th>Title</th>
+                <th>Photos</th>
+                <th>Category</th>
+                <th>Manufacturer</th>
+                <th>Price</th>
+                <th>Count</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Goods)
             {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.GoodName)
                     </td>
+                    @*Show random photo*@
                     @if (item.Photos.Count > 0)
                     {
-                        ///Files/Download?fn=
                         int photoid = new Random().Next(1, item.Photos.Count);
                         string fPath = Path.GetFileName(item.Photos.ToList()[photoid - 1].PhotoPath);
                         <td>
-                            <a href="~/Upload/@fPath" target="_blank"><img src="~/Upload/@fPath" alt="@fPath" width="80" /></a>
+                            <a href="~/Upload/@fPath" target="_blank"><img src="~/Upload/@fPath" alt="@fPath" width="80" loading="lazy" /></a>
                         </td>
                     }
                     else
@@ -72,7 +62,6 @@
                         <td data-toggle="tooltip" data-placement="top" title="Id = @item.ManufacturerId">
                             @Html.ActionLink(@item.Manufacturer.ManufacturerName, "Goods", "Admin", new { category = (string)null, manufacturer = item.Manufacturer.ManufacturerName, page = 1 }, new { @class = "nav-item" })
                         </td>
-
                     }
                     else
                     {

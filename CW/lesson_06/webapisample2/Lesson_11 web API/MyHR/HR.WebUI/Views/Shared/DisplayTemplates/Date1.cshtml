@@ -1,0 +1,26 @@
+﻿@model DateTime
+
+@{ 
+    var culture = System.Threading.Thread.CurrentThread
+        .CurrentCulture.Name;
+}
+@if (culture != "en-US")
+{
+    @Html.TextBox("", Model.ToString("dd/MM/yyyy"), new
+    {
+        @class = "datepicker",
+        data_date_format = System.Globalization.CultureInfo.CurrentCulture.
+                         DateTimeFormat.ShortDatePattern.ToLower()
+    })
+}
+else
+{
+    @Html.TextBox("", Model, new
+   {
+       @class = "datepicker",
+       data_date_format = System.Globalization.CultureInfo.CurrentCulture.
+                         DateTimeFormat.ShortDatePattern.ToLower()
+   })
+
+}
+

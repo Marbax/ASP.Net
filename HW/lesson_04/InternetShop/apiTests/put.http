@@ -1,0 +1,8 @@
+put https://localhost:44395/api/v1/goods/55 HTTP/1.1
+Content-Type: application/json
+
+  {
+    "GoodName": "11",
+    "Price": 155,
+    "GoodCount": 1
+  }

@@ -1,0 +1,20 @@
+#GET http://localhost:49436/api/student
+
+
+
+# POST http://localhost:49436/api/student/
+# Content-Type: application/json
+
+# {
+#     "Name": "Alex",
+#     "Lastname": "Klar"
+# }
+
+
+PUT http://localhost:49436/api/student/1
+Content-Type: application/json
+
+{
+    "Name": "JOOOOOOHN",
+    "Lastname": ""
+}

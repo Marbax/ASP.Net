@@ -1,0 +1,11 @@
+post https://localhost:44395/api/v1/goods/ HTTP/1.1
+Content-Type: application/json
+
+  {
+    "GoodName": "999999",
+    "Price": 12,
+    "GoodCount": 11,
+    "ManufacturerId": 2,
+    "CategoryId": 5
+
+  }

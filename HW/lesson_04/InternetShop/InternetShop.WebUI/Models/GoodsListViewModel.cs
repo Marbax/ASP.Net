@@ -26,16 +26,3 @@ namespace InternetShop.WebUI.Models
         public static GoodsListViewModel GetDefaultView() => new GoodsListViewModel() { PagingInfo = new PagingInfo() { CurrentPage = 1 }, Filter = new Filter() };
     }
 }
-public class Filter
-{
-
-    [Required]
-    [Range(0, double.MaxValue, ErrorMessage = "Please enter a positive price")]
-    [Display(Name = "From")]
-    public decimal From { get; set; } = default;
-
-    [Required]
-    [Range(0, double.MaxValue, ErrorMessage = "Please enter a positive price")]
-    [Display(Name = "To")]
-    public decimal To { get; set; } = decimal.MaxValue;
-}

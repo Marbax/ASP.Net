@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Show";
+}
+
+<h2>Show Product</h2>
+<link href="~/Content/themes/base/jquery.ui.base.css" rel="stylesheet" />
+<link href="~/Content/themes/base/jquery.ui.theme.css" rel="stylesheet" />
+<link href="~/Content/themes/base/jquery.ui.dialog.css" rel="stylesheet" />
+<link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+@*<link href="~/Content/themes/base/base.css" rel="stylesheet" />
+<link href="~/Content/themes/base/theme.css" rel="stylesheet" />
+<link href="~/Content/themes/base/dialog.css" rel="stylesheet" />
+<link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />*@
+
+<table id="gridMain"></table>
+
+<div id="pagernav">
+
+</div>
+
+@section Scripts
+{
+<script src="~/Scripts/jquery-ui-1.10.0.min.js"></script>
+<script src="~/Scripts/i18n/grid.locale-en.js"></script>
+<script src="~/Scripts/jquery.jqGrid.min.js"></script>
+<script>
+
+    var API_URL = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "ProductGrid"})';
+    jQuery("#gridMain").jqGrid({
+        url: API_URL,
+        datatype: 'json',
+        mtype: 'GET',
+        pager: '#pagernav',
+        sortable: true,
+        height: 200,
+        viewrecords: true,
+        colNames: ['Id', 'Name', 'Category', 'Price'],
+        colModel: [{ name: 'Id', index: 'Id', width: 40, sorttype: "int" },
+         { name: 'Name', index: 'Name', editable: true, edittype: 'text', width: 70 },
+         { name: 'Category', index: 'Category', editable: true, edittype: 'text', width: 70 },
+         { name: 'Price', index: 'Price', editable: true, edittype: 'text', width: 50, align: "right", sorttype: "float", formatter: "number" }
+        ],
+        caption: "CRUD With ASP.NET Web API",
+        rowNum: 10,
+        autowidth: true
+
+    });
+
+
+    function updateDialog(action) {
+        return {
+            url: API_URL
+            , closeAfterAdd: true
+            , closeAfterEdit: true
+            , afterShowForm: function (formId) { }
+            , modal: true
+            , dataType: "json"
+            , onclickSubmit: function (params) {
+                var list = $("#gridMain");
+                var selectedRow = list.getGridParam("selrow");
+                rowData = list.getRowData(selectedRow);
+                params.url += '/';
+                params.url += rowData.Id;
+                params.mtype = action;
+            }
+            , width: "300"
+        };
+    }
+
+
+    jQuery("#gridMain").jqGrid('navGrid', '#pagernav',
+          { add: true, edit: true, del: true },
+
+          updateDialog('POST'),
+          updateDialog('PUT'),
+          updateDialog('DELETE')
+    );
+</script>
+}

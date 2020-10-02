@@ -54,3 +54,14 @@
 
 </p></details>
 
+
+<details><summary> 6.ASP.Net Web Api. </summary><p>
+
+[ASP MVC Web Api example ](CW/lesson_06/webapisample "CW/lesson_06/webapisample")
+
+[ASP MVC advanced Web Api example ](CW/lesson_06/webapisample2 "CW/lesson_06/webapisample2")
+
+[ASP MVC async web api ](HW/lesson_04/InternetShop "HW/lesson_04/InternetShop")
+
+</p></details>
+

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<HR.DAL.DbLayer.EmpPromotion>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Promotion Employee</h2>
+
+<div class="row">
+
+    <div class="col-md-4">
+        @Html.DropDownList("Employee")
+    </div>
+
+
+    <div id="listproms" class="col-md-8">
+         @*@{ Html.RenderAction("ListProms", new { id = 1});}*@
+    </div>
+
+</div>
+@section MyScript
+{
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#listproms').load('@Url.Action("ListProms", "Promotion")', { id: $('#Employee').val() });
+
+            $('#Employee').change(function () {
+                var id = $(this).val();
+                $('#listproms').load('@Url.Action("ListProms", "Promotion")', { id: id });
+            });
+
+
+            $('body').on('click', '#newpromotion', function (e) {
+                e.preventDefault();
+                var employeeid = $('#Employee').val();
+                var url = '@Url.Action("Edit", "Promotion")'+'?id=0&parentid=' + employeeid;
+                window.location.href = url;
+            });
+
+
+        });
+
+    </script>
+}

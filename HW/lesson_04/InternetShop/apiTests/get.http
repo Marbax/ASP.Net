@@ -1,0 +1,11 @@
+#GET https://localhost:44395/api/v1/goods/ HTTP/1.1
+
+#GET https://localhost:44395/api/v1/goods/categories HTTP/1.1
+
+#GET https://localhost:44395/api/v1/goods/categories/5 HTTP/1.1
+
+#GET https://localhost:44395/api/v1/goods/manufacturers HTTP/1.1
+
+#GET https://localhost:44395/api/v1/goods/manufacturers/1 HTTP/1.1
+
+GET https://localhost:44395/api/v1/goods/manufacturers/1/categories HTTP/1.1

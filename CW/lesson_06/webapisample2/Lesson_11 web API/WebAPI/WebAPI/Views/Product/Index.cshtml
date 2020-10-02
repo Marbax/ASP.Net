@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div id="data"></div>
+
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#data').load('/api/Product');
+        });
+		
+		
+		
+		@*$(function () {
+            $.getJSON('@Url.RouteUrl("DefaultApi",new {httproute="",controller="Product" })',
+                function(data)
+                {
+                    // Looping through  JSONs
+                    $.each(data, function (i, object) {
+                        
+                        $('#productsSet').append('<ul ' + 'class=list-group' + '>' + '<strong>'
+                            + object.Name + '</strong>');
+                        // Looping through properties of current JSON
+                         $.each(object, function (index, obj) {
+                             $('#productsSet').append('<li '+'class=list-group-item'+'>' + obj+'</li>');
+                         });
+                    });
+                    $('#productsSet').append('</ul>');
+                }
+            )
+        });*@
+    </script>
+}

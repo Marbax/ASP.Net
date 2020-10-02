@@ -1,0 +1,1 @@
+delete https://localhost:44395/api/v1/goods/56 HTTP/1.1

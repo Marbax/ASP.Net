@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Test PartialView</h2>
+
+@Html.Partial("PartView1")
+
+
+@{
+    Html.RenderPartial("PartView1");
+}
+
+@*@Html.Action("PartView1")*@

@@ -1,6 +1,7 @@
 ﻿using InternetShop.Domain.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -9,6 +10,10 @@ namespace InternetShop.WebUI.Models
     public class GoodViewModel
     {
         public GoodViewModel() { }
+
+        public GoodViewModel(Good good, IEnumerable<Category> cats, IEnumerable<Manufacturer> mans) :
+            this(good.GoodId, good.GoodName, good.Price, good.GoodCount, good.CategoryId, good.ManufacturerId, cats, mans)
+        { }
 
         public GoodViewModel(int id, string name, decimal price, decimal count, int? catId, int? manId, IEnumerable<Category> cats, IEnumerable<Manufacturer> mans, IEnumerable<HttpPostedFileBase> photos = null)
         {

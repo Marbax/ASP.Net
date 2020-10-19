@@ -1,4 +1,4 @@
-﻿@model InternetShop.Domain.Entities.Category
+﻿@model InternetShop.BLL.Models.UIModels.CategoryVM
 
 @using (Html.BeginForm())
 {
@@ -20,6 +20,9 @@
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.CategoryName)
+                    </dd>
+                    <dd>
+                        Goods referenced @Model.Goods.Count()
                     </dd>
                 </dl>
             </form>

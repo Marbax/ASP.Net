@@ -1,9 +1,6 @@
 ﻿using InternetShop.WebUI.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace InternetShop.WebUI.htmlHelpers
@@ -24,6 +21,5 @@ namespace InternetShop.WebUI.htmlHelpers
             }
             return MvcHtmlString.Create(result.ToString());
         }
-
     }
 }

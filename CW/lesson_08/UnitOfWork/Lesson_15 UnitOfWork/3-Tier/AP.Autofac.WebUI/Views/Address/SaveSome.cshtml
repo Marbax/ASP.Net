@@ -1,0 +1,23 @@
+﻿
+
+@{
+    ViewBag.Title = "SaveSome";
+}
+
+<h2>SaveSome</h2>
+
+@if (ViewBag.Error == string.Empty)
+{
+    <div>Данные добавлены в БД</div>
+    <ul>
+        @foreach (var item in ViewBag.Model)
+        {
+            <li>@item.House</li>
+        }
+    </ul>
+
+}
+else
+{
+    <div>@ViewBag.Error</div>
+}

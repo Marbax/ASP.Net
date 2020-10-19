@@ -1,4 +1,4 @@
-﻿@model InternetShop.WebUI.Models.GoodViewModel
+﻿@model InternetShop.BLL.Models.UIModels.GoodVM
 
 @using (Ajax.BeginForm("EditGood", "Admin", new AjaxOptions() { UpdateTargetId = "goodModalDialog", HttpMethod = "Post" }, new { enctype = "multipart/form-data" }))
 {
@@ -14,6 +14,7 @@
         <div class="modal-body">
             <form class="justify-content-center">
                 @Html.HiddenFor(model => model.GoodId)
+
                 <div class="form-group">
                     @Html.LabelFor(model => model.GoodName, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
@@ -23,27 +24,27 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Photos, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.UploadedPhotos, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="inputFiles" name="Photos" multiple>
+                            <input type="file" class="custom-file-input" id="inputFiles" name="UploadedPhotos" multiple>
                             <label class="custom-file-label" for="inputFiles">Add photos</label>
                         </div>
-                        @Html.ValidationMessageFor(model => model.Photos, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.UploadedPhotos, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Manufacturers, "Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.SelectManufacturers, "Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.ManufacturerId, Model.Manufacturers, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.ManufacturerId, Model.SelectManufacturers, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Categories, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.SelectCategories, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.CategoryId, Model.Categories, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.CategoryId, Model.SelectCategories, htmlAttributes: new { @class = "form-control" })
                     </div>
                 </div>
 

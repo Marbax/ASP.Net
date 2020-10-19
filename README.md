@@ -65,3 +65,14 @@
 
 </p></details>
 
+
+<details><summary> 7.ASP.Net Owin , Identity , auth. </summary><p>
+
+[ASP MVC owin example ](CW/lesson_07/OWIN_exs "CW/lesson_07/OWIN_exs")
+
+[ASP MVC identity example ](CW/lesson_07/Identity_exs "CW/lesson_07/Identity_exs")
+
+[ASP MVC identity , auth](HW/lesson_04/InternetShop "HW/lesson_04/InternetShop")
+
+</p></details>
+

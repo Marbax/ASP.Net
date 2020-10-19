@@ -10,14 +10,14 @@ namespace InternetShop.Domain.Concrete
         {
         }
 
-        public override void Delete(Manufacturer entity)
+        public override Manufacturer Delete(Manufacturer entity)
         {
             if (entity.Good.Count > 0)
             {
                 throw new System.ApplicationException($"Some goods refers to that category: \"{entity.Good.Select(g => g.GoodName).Aggregate((f, s) => f + ',' + s)}\"");
             }
 
-            base.Delete(entity);
+            return base.Delete(entity);
         }
     }
 }

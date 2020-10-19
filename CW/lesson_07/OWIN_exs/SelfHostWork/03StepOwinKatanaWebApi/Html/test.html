@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Katana</title>
+   
+    <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" class="navbar-brand">
+                    MyApplication
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        <br /><br /><br />
+        <div id="data"> </div>
+        <hr />
+        <div id="data2"></div>
+        <hr />
+        <table id="example" class="display compact" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+        </table>
+
+        <hr />
+        <footer>
+            <p>&copy; My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    <script src="/scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            $("#data").load('/api/Product');
+
+
+
+            $.ajax({
+                url: 'http://localhost:9000/api/Product',      // указываем URL и
+                dataType: "json",								// тип загружаемых данных
+                success: function (data, textStatus) {			// вешаем свой обработчик на функцию succes
+                    var arrayDATA = new Array()					//оголошуємо пустий масив
+                    $.each(data, function (i, val) {		//перебираємо json Продуктів
+                        var a = [val.Id, val.Name, val.Category, val.Price];	// створюємо скріптовий масив на кожний Product
+                        arrayDATA[arrayDATA.length] = a;						// додаємо цей масив в кінець масиву Продуктів
+                    });
+
+                    $("#example").dataTable({
+
+                        "aaData": arrayDATA,		//в  дані передамо отриманий парсінгом масив масивів стрінгів
+
+
+
+                        language: {
+                            "processing": "Подождите...",
+                            "search": "Пошук:",
+                            "lengthMenu": "Показати _MENU_ записів",
+                            "info": "Записи з _START_ до _END_ із _TOTAL_ записів",
+                            "infoEmpty": "Записи з 0 до 0 із 0 записів",
+                            "infoFiltered": "(відфільтровано із _MAX_ записів)",
+                            "infoPostFix": "",
+                            "loadingRecords": "Загрузка записей...",
+                            "zeroRecords": "Записи отсутствуют.",
+                            "emptyTable": "В таблице отсутствуют данные",
+                            "paginate": {
+                                "first": "Перша",
+                                "previous": "Попередня",
+                                "next": "Наступна",
+                                "last": "Остання"
+                            },
+                            "aria": {
+                                "sortAscending": ": активировать для сортировки столбца по возрастанию",
+                                "sortDescending": ": активировать для сортировки столбца по убыванию"
+                            }
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

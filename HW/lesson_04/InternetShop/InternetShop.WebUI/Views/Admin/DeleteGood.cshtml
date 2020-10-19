@@ -1,4 +1,4 @@
-﻿@model InternetShop.Domain.Entities.Good
+﻿@model InternetShop.BLL.Models.UIModels.GoodVM
 
 @using (Html.BeginForm())
 {
@@ -21,10 +21,10 @@
                         @Html.DisplayFor(model => model.GoodName)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.Price)
+                        @Html.DisplayNameFor(model => model.GoodPrice)
                     </dt>
                     <dd>
-                        @Html.DisplayFor(model => model.Price)
+                        @Html.DisplayFor(model => model.GoodPrice)
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.GoodCount)

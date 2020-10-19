@@ -1,0 +1,28 @@
+﻿@model IdentityExample.Models.UserModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+    <center>
+        <div>
+            <h2>Login page</h2>
+            @using (Html.BeginForm())
+            {
+                @Html.ValidationSummary(true)
+
+                @Html.EditorForModel()
+
+                <input type="submit" />
+            }
+        </div>
+    </center>
+</body>
+</html>

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using LinqKit;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -24,26 +23,13 @@ namespace InternetShop.Domain.Concrete
         public void CreateOrUpdate(T entity)
         {
             _dbSet.AddOrUpdate(entity);
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
 
-        public async Task CreateOrUpdateAsync(T entity)
+        public virtual T Delete(T entity)
         {
-            _dbSet.AddOrUpdate(entity);
-            _ = await _context.SaveChangesAsync();
-        }
-
-        public virtual void Delete(T entity)
-        {
-            _dbSet.Remove(entity);
-            _context.SaveChanges();
-        }
-
-        public async virtual Task<T> DeleteAsync(T entity)
-        {
-            var removed = _dbSet.Remove(entity);
-            _ = await _context.SaveChangesAsync();
-            return removed;
+            return _dbSet.Remove(entity);
+            //_context.SaveChanges();
         }
 
         public T Get(int id) => _dbSet.Find(id);
@@ -58,11 +44,21 @@ namespace InternetShop.Domain.Concrete
 
         public IQueryable<T> GetAllAsync() => _context.Set<T>().AsNoTracking();
 
-        public async Task<T> AddAsync(T entity)
+        public T Add(T entity)
         {
             T added = _dbSet.Add(entity);
-            _ = await _context.SaveChangesAsync();
+            //_context.SaveChanges();
             return added;
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

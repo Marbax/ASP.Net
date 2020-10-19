@@ -15,9 +15,9 @@ namespace InternetShop.Domain.Abstract
         IEnumerable<T> Get(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetAsync(Expression<Func<T, bool>> predicate);
         void CreateOrUpdate(T entity);
-        Task CreateOrUpdateAsync(T entity);
-        Task<T> AddAsync(T entity);
-        void Delete(T entity);
-        Task<T> DeleteAsync(T entity);
+        T Add(T entity);
+        T Delete(T entity);
+        Task SaveAsync();
+        void Save();
     }
 }

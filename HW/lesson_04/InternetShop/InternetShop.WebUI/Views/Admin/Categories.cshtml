@@ -1,5 +1,5 @@
-﻿@using InternetShop.WebUI.Models
-@model CategoriesListViewModel
+﻿@using InternetShop.BLL.Models.UIModels
+@model CategoriesListVM
 
 @{
     ViewBag.Title = "Categories";
@@ -29,9 +29,10 @@
     <div id="categoryModalDialog" class="modal-dialog" role="document">
     </div>
 </div>
-
-@Ajax.ActionLink("Create New", "CreateCategory", null, new AjaxOptions { UpdateTargetId = "categoryModalDialog" }, new { @class = "btn btn-sm btn-success m-1", data_toggle = "modal", data_target = "#categoryModal" })
-
+@if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+{
+    @Ajax.ActionLink("Create New", "CreateCategory", null, new AjaxOptions { UpdateTargetId = "categoryModalDialog" }, new { @class = "btn btn-sm btn-success m-1", data_toggle = "modal", data_target = "#categoryModal" })
+}
 <div id="categories" class="mx-auto">
     @{Html.RenderPartial("CategoriesSummary", Model.Categories);}
 </div>

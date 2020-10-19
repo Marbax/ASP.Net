@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InternetShop.Domain.Entities.Manufacturer>
+﻿@model IEnumerable<InternetShop.BLL.Models.UIModels.ManufacturerVM>
 
 @{
     ViewBag.Title = "Manufacturers";
@@ -13,23 +13,41 @@
     <table class="table">
         <thead>
             <tr>
+                @if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.ManufacturerId)
+                    </th>
+                }
                 <th>
                     @Html.DisplayNameFor(model => model.ManufacturerName)
                 </th>
-                <th>Action</th>
+                @if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+                {
+                    <th>Action</th>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
+                    @if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+                    {
+                        <td>
+                            @item.ManufacturerId
+                        </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.ManufacturerName)
                     </td>
-                    <td>
-                        @Ajax.ActionLink("Edit", "EditManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-warning m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
-                        @Ajax.ActionLink("Delete", "DeleteManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-danger m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
-                    </td>
+                    @if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+                    {
+                        <td>
+                            @Ajax.ActionLink("Edit", "EditManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-warning m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
+                            @Ajax.ActionLink("Delete", "DeleteManufacturer", new { manId = item.ManufacturerId }, new AjaxOptions { UpdateTargetId = "manufacturerModalDialog" }, new { @class = "btn btn-sm btn-danger m-1", data_toggle = "modal", data_target = "#manufacturerModal" })
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

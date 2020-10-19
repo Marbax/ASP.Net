@@ -1,0 +1,25 @@
+@model IEnumerable<coremvctest.Models.Good>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+
+<h1>Hello from Good</h1>
+
+<table>
+    <thead>
+        <tr><th>Id</th><th>GoodName</th><th>Price</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var good in Model)
+        {
+            <tr>
+                <td>@good.GoodId</td>
+                <td>@good.GoodName</td>
+                <td>@good.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>

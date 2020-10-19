@@ -1,11 +1,12 @@
-﻿using InternetShop.Domain.Abstract;
-using InternetShop.Domain.Entities;
-using InternetShop.WebUI.Models;
+﻿using InternetShop.BLL.Models.UIModels;
+using InternetShop.BLL.Services.Abstract;
 using LinqKit;
 using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -62,59 +63,44 @@ namespace InternetShop.WebUI.Controllers
     /// </summary>
     public class AdminController : Controller
     {
-        private readonly IRepository<Good> _goodsRepo;
-        private readonly IRepository<Category> _catRepo;
-        private readonly IRepository<Manufacturer> _manufRepo;
-        private readonly IRepository<Photo> _photosRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly string _imgDir = $"{AppDomain.CurrentDomain.BaseDirectory}Upload\\";
 
         public int PageSize { get; set; } = 7;
 
-        public AdminController(IRepository<Good> goodsRepo, IRepository<Category> catRepo, IRepository<Manufacturer> manRepo, IRepository<Photo> photosRepo)
+        public AdminController(IUnitOfWork unitOfWork)
         {
-            _goodsRepo = goodsRepo;
-            _catRepo = catRepo;
-            _manufRepo = manRepo;
-            _photosRepo = photosRepo;
+            _unitOfWork = unitOfWork;
         }
 
         #region Goods
-        public RedirectToRouteResult Index(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue) => RedirectToAction("Goods", new { category, manufacturer, page, from, to });
-        public ViewResult Goods(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue) // старый фильтр не пашет 
-        {
-            GoodsListViewModel newGoodVM = GetGoodVM(category, manufacturer, page, from, to);
+        public RedirectToRouteResult Index(string category, string manufacturer, int page = 1, decimal from = -1, decimal to = -1) => RedirectToAction("Goods", new { category, manufacturer, page, from, to });
 
-            return View(newGoodVM);
-        }
+        public async Task<ViewResult> Goods(string category, string manufacturer, int page = 1, decimal from = -1, decimal to = -1) => View(await GetGoodVM(category, manufacturer, page, from, to));
+
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public ActionResult Goods(GoodsListViewModel goodVM)
-        {
-            var newGoodsVM = GetGoodVM(goodVM.CurrentCategory, goodVM.CurrentManufacturer, goodVM.PagingInfo.CurrentPage, goodVM.Filter.From, goodVM.Filter.To);
+        public async Task<ActionResult> Goods(GoodsListVM goodVM) => View(await GetGoodVM(goodVM.CurrentCategory, goodVM.CurrentManufacturer, goodVM.PagingInfo.CurrentPage, goodVM.Filter.From, goodVM.Filter.To));
 
-            return View(newGoodsVM);
-        }
-        public PartialViewResult GoodSummary(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue)
-        {
-            var newGoodsVM = GetGoodVM(category, manufacturer, page, from, to);
+        public async Task<PartialViewResult> GoodSummary(string category, string manufacturer, int page = 1, decimal from = -1, decimal to = -1) => PartialView(await GetGoodVM(category, manufacturer, page, from, to));
 
-            return PartialView(newGoodsVM);
-        }
-        private GoodsListViewModel GetGoodVM(string category, string manufacturer, int page = 1, decimal from = 0, decimal to = decimal.MaxValue)
+        private async Task<GoodsListVM> GetGoodVM(string category, string manufacturer, int page = 1, decimal from = -1, decimal to = -1)
         {
-            var predicate = PredicateBuilder.New<Good>();
-            var pred = PredicateBuilder.New<Good>();
-            pred.And(i => category == null || i.Category.CategoryName.Contains(category));
-            pred.And(i => manufacturer == null || i.Manufacturer.ManufacturerName.Contains(manufacturer));
-            pred.And(i => from == default || i.Price >= from);
-            pred.And(i => from == decimal.MaxValue || i.Price <= to);
+            from = from == -1 ? (await _unitOfWork.GoodsRepo.GetAllAsync()).AsQueryable().Min(i => i.GoodPrice) : from;
+            to = to == -1 ? (await _unitOfWork.GoodsRepo.GetAllAsync()).AsQueryable().Max(i => i.GoodPrice) : to;
 
+            var predicate = PredicateBuilder.New<GoodVM>();
+            var pred = PredicateBuilder.New<GoodVM>();
+            pred.And(i => category == null || i.CategoryName == category);
+            pred.And(i => manufacturer == null || i.ManufacturerName == manufacturer); // fcn bullshit with nulls and contains
+            pred.And(i => i.GoodPrice >= from);
+            pred.And(i => i.GoodPrice <= to);
             predicate.Extend(pred, PredicateOperator.Or);
 
-            var goods = _goodsRepo.Get(predicate).ToList();
+            var goods = (await _unitOfWork.GoodsRepo.GetAsync(predicate)).AsQueryable().OrderBy(i => i.GoodId).ToList();
             var count = goods.Count();
 
-            GoodsListViewModel goodVM = new GoodsListViewModel
+            var goodVM = new GoodsListVM
             {
                 Goods = goods
                     .Skip((page - 1) * PageSize)
@@ -126,88 +112,121 @@ namespace InternetShop.WebUI.Controllers
                     TotalItems = count
                 },
                 CurrentCategory = category,
-                CurrentManufacturer = manufacturer
+                CurrentManufacturer = manufacturer,
+                Filter = new BLL.Models.UIModels.Filter
+                {
+                    From = from,
+                    To = to
+                }
             };
 
             return goodVM;
         }
 
-        public ActionResult CreateGood()
+        [Authorize(Roles = "AppManager")]
+        public async Task<ActionResult> CreateGood()
         {
-            return PartialView("EditGood", new GoodViewModel(default, default, default, default, default, default, _catRepo.GetAll(), _manufRepo.GetAll()));
+            var vm = new GoodVM();
+            vm.Categories = await _unitOfWork.CatsRepo.GetAllAsync();
+            vm.Manufacturers = await _unitOfWork.MansRepo.GetAllAsync();
+
+            return PartialView("EditGood", vm);
         }
-        public ActionResult EditGood(int goodId)
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<ActionResult> EditGood(int goodId)
         {
-            Good good = _goodsRepo.Get(goodId);
-            return PartialView(new GoodViewModel(good.GoodId, good.GoodName, good.Price, good.GoodCount, good.CategoryId, good.ManufacturerId, _catRepo.GetAll(), _manufRepo.GetAll()));
+            GoodVM goodVM = await _unitOfWork.GoodsRepo.GetAsync(goodId);
+            goodVM.Categories = await _unitOfWork.CatsRepo.GetAllAsync();
+            goodVM.Manufacturers = await _unitOfWork.MansRepo.GetAllAsync();
+
+            return PartialView(goodVM);
         }
+
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditGood(GoodViewModel goodVM)
+        public async Task<ActionResult> EditGood(GoodVM goodVM)
         {
             if (ModelState.IsValid)
             {
-                Good good = _goodsRepo.Get(goodVM.GoodId);
-                if (good == null)
-                    good = new Good();
-                good.GoodName = goodVM.GoodName;
-                good.Price = goodVM.GoodPrice;
-                good.GoodCount = goodVM.GoodCount;
-                good.CategoryId = goodVM.CategoryId;
-                good.ManufacturerId = goodVM.ManufacturerId;
-
-                StringBuilder sb = new StringBuilder("");
-                if (goodVM.Photos != null)
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    foreach (var item in goodVM.Photos)
+                    var good = await _unitOfWork.GoodsRepo.GetAsync(goodVM.GoodId);
+                    if (good == null)
+                        _unitOfWork.GoodsRepo.Add(goodVM);
+                    else
+                        _unitOfWork.GoodsRepo.CreateOrUpdate(goodVM);
+
+                    StringBuilder sb = new StringBuilder("");
+                    if (goodVM.UploadedPhotos != null)
                     {
-                        if (item.ContentLength / 1000 < 5000 && MimeMapping.GetMimeMapping(item.FileName).Contains("image/"))
+                        foreach (var item in goodVM.UploadedPhotos)
                         {
-                            item.SaveAs(_imgDir + item.FileName);
-                            Photo ph = new Photo() { GoodId = good.GoodId, PhotoPath = item.FileName };
-                            good.Photos.Add(ph);
-                            _photosRepo.CreateOrUpdate(ph);
+                            if (item.ContentLength / 1000 < 5000 && MimeMapping.GetMimeMapping(item.FileName).Contains("image/"))
+                            {
+                                item.SaveAs(_imgDir + item.FileName);
+                                var ph = new PhotoVM() { GoodId = good.GoodId, PhotoPath = item.FileName };
+                                _unitOfWork.PhotosRepo.CreateOrUpdate(ph);
+                            }
+                            else
+                                sb.Append($"Invalid file:\"{item.FileName}\" ");
                         }
-                        else
-                            sb.Append($"Invalid file:\"{item.FileName}\" ");
                     }
+                    TempData["message"] = $"{goodVM.GoodName} successfully saved.{sb.ToString()}";
+
+                    _unitOfWork.Save();
+                    trans.Complete();
                 }
-                _goodsRepo.CreateOrUpdate(good);
-                TempData["message"] = $"{goodVM.GoodName} successfully saved.{sb.ToString()}";
                 return new JavaScriptResult() { Script = "window.location.href = '/Admin/Goods';" };
             }
             else
-                return PartialView(new GoodViewModel(goodVM.GoodId, goodVM.GoodName, goodVM.GoodPrice, goodVM.GoodCount, goodVM.CategoryId, goodVM.ManufacturerId, _catRepo.GetAll(), _manufRepo.GetAll(), goodVM.Photos));
+            {
+                goodVM.Categories = await _unitOfWork.CatsRepo.GetAllAsync();
+                goodVM.Manufacturers = await _unitOfWork.MansRepo.GetAllAsync();
+                return PartialView(goodVM);
+            }
             // при валидации фотки выбранные ранее передаются в ВМ , но из нее не передаются в вьюху
         }
-        public ActionResult DeleteGood(int goodId)
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<ActionResult> DeleteGood(int goodId)
         {
-            Good good = _goodsRepo.Get(goodId);
-            if (good != null)
-                return PartialView(good);
+            var gvm = await _unitOfWork.GoodsRepo.GetAsync(goodId);
+            if (gvm != null)
+                return PartialView(gvm);
             return HttpNotFound();
         }
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteGood(Good good) // не хочет ничего кроме айдишник передавать ,даже шаблонная форма АСП , а если передаешь таки поля , то это не считается обьектом dbSet'а
+        public async Task<ActionResult> DeleteGood(GoodVM gvm)
         {
             try
             {
-                int gID = good.GoodId;
-                TempData["message"] = $"{good.GoodName} successfully deleted.";
-                _goodsRepo.Delete(_goodsRepo.Get(gID));
-                var toDelPhotos = _photosRepo.Get(p => p.GoodId == gID || p.GoodId == null).ToList();
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    var deleted = await _unitOfWork.GoodsRepo.DeleteAsync(gvm);
 
-                var imgsPath = toDelPhotos
-                    .GroupBy(i => i.PhotoPath)
-                    .Select(i => i.First())
-                    .Where(p => _photosRepo.Get(i => i.PhotoPath == p.PhotoPath && i.Good != null).Count() == 0)
-                    .Select(i => i.PhotoPath)
-                    .ToList();
+                    TempData["message"] = $"{deleted.GoodName} successfully deleted.";
+                    var toDelPhotos = await _unitOfWork.PhotosRepo.GetAsync(p => p.GoodId == deleted.GoodId || p.GoodId == null);
+                    /*
+                    var imgsPath = toDelPhotos
+                        .GroupBy(i => i.PhotoPath)
+                        .Select(i => i.First())
+                        .Where(p => _photosRepo.Get(i => i.PhotoPath == p.PhotoPath && i.Good != null).Count() <= 1)
+                        .Select(i => i.PhotoPath)
+                        .ToList();
+                    toDelPhotos.Select(i => i.PhotoId).ToList().ForEach((i) => _photosRepo.Delete(_photosRepo.Get(i))); // doesnt want to work asyncy
 
-                toDelPhotos.ForEach(p => _photosRepo.Delete(p));
-                imgsPath.ForEach(i => System.IO.File.Delete(_imgDir + i));
+                    Parallel.ForEach(imgsPath, i => System.IO.File.Delete(_imgDir + i));
+                    *///fuck async
 
+                    _unitOfWork.Save();
+                    trans.Complete();
+                }
                 return RedirectToAction("Goods");
             }
             catch (Exception ex)
@@ -215,72 +234,74 @@ namespace InternetShop.WebUI.Controllers
                 TempData["message"] = $"{ex.Message}";
                 return RedirectToAction("Goods");
             }
-
         }
         #endregion
 
 
         #region Categories
-        public ViewResult Categories(int page = 1)
+        public async Task<ViewResult> Categories(int page = 1)
         {
-            return View(new CategoriesListViewModel()
+            return View(new CategoriesListVM()
             {
-                Categories = _catRepo.GetAll()
+                Categories = (await _unitOfWork.CatsRepo.GetAllAsync()).OrderBy(i => i.CategoryId)
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize)
                 ,
-                PagingInfo = new PagingInfo() { CurrentPage = page, ItemsPerPage = PageSize, TotalItems = _catRepo.GetAll().Count() }
+                PagingInfo = new PagingInfo() { CurrentPage = page, ItemsPerPage = PageSize, TotalItems = (await _unitOfWork.CatsRepo.GetAllAsync()).Count() }
             });
         }
-        public PartialViewResult CategoriesSummary(int page = 1)
-        {
-            return PartialView(_catRepo.GetAll()
-                    .Skip((page - 1) * PageSize)
-                    .Take(PageSize)
-            );
-        }
-        public PartialViewResult CreateCategory()
-        {
-            return PartialView("EditCategory", new CategoryViewModel());
-        }
-        public PartialViewResult EditCategory(int catId)
-        {
-            Category cat = _catRepo.Get(catId);
-            return PartialView(new CategoryViewModel() { CategoryId = cat.CategoryId, CategoryName = cat.CategoryName });
-        }
+
+        public async Task<PartialViewResult> CategoriesSummary(int page = 1) => PartialView((await _unitOfWork.CatsRepo.GetAllAsync()).OrderBy(i => i.CategoryId).Skip((page - 1) * PageSize).Take(PageSize));
+
+
+        [Authorize(Roles = "AppManager")]
+        public PartialViewResult CreateCategory() => PartialView("EditCategory", new CategoryVM());
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<PartialViewResult> EditCategory(int catId) => PartialView(await _unitOfWork.CatsRepo.GetAsync(catId));
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCategory(CategoryViewModel categoryVM)
+        public async Task<ActionResult> EditCategory(CategoryVM categoryVM)
         {
             if (ModelState.IsValid)
             {
-                Category cat = _catRepo.Get(categoryVM.CategoryId);
-                if (cat == null)
-                    cat = new Category();
-                cat.CategoryName = categoryVM.CategoryName;
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    CategoryVM added = null;
+                    if (categoryVM.CategoryId > 0 && await _unitOfWork.CatsRepo.GetAsync(categoryVM.CategoryId) != null)
+                        _unitOfWork.CatsRepo.CreateOrUpdate(categoryVM);
+                    else
+                        added = _unitOfWork.CatsRepo.Add(categoryVM);
 
-                _catRepo.CreateOrUpdate(cat);
-                TempData["message"] = $"{cat.CategoryName} successfully saved.";
+                    _unitOfWork.Save();
+                    trans.Complete();
+                }
+                TempData["message"] = $"{categoryVM.CategoryName} successfully saved.";
                 return new JavaScriptResult() { Script = "$('#categoryModal').modal('hide');window.location.href = '/Admin/Categories';" };
             }
             else
                 return PartialView("EditCategory", categoryVM);
         }
-        public ActionResult DeleteCategory(int catId)
-        {
-            Category cat = _catRepo.Get(catId);
-            if (cat != null)
-                return PartialView(cat);
-            return HttpNotFound();
-        }
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<ActionResult> DeleteCategory(int catId) => PartialView(await _unitOfWork.CatsRepo.GetAsync(catId));
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteCategory(Category category)
+        public async Task<ActionResult> DeleteCategory(CategoryVM categoryVM)
         {
             try
             {
-                TempData["message"] = $"{category.CategoryName} successfully deleted.";
-                _catRepo.Delete(_catRepo.Get(category.CategoryId));
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    var deleted = await _unitOfWork.CatsRepo.DeleteAsync(categoryVM);
+                    TempData["message"] = $"{deleted.CategoryName} successfully deleted.";
+                    _unitOfWork.Save();
+                    trans.Complete();
+                }
                 return RedirectToAction("Categories");
             }
             catch (ApplicationException ex)
@@ -293,66 +314,69 @@ namespace InternetShop.WebUI.Controllers
 
 
         #region Manufacturers
-        public ViewResult Manufacturers(int page = 1)
+        public async Task<ViewResult> Manufacturers(int page = 1)
         {
-            return View(new ManufacturersListViewModel()
+            return View(new ManufacturersListVM()
             {
-                Manufacturers = _manufRepo.GetAll()
+                Manufacturers = (await _unitOfWork.MansRepo.GetAllAsync()).OrderBy(i => i.ManufacturerId)
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize)
              ,
-                PagingInfo = new PagingInfo() { CurrentPage = page, ItemsPerPage = PageSize, TotalItems = _manufRepo.GetAll().Count() }
+                PagingInfo = new PagingInfo() { CurrentPage = page, ItemsPerPage = PageSize, TotalItems = (await _unitOfWork.MansRepo.GetAllAsync()).Count() }
             });
         }
-        public PartialViewResult ManufacturersSummary(int page = 1)
-        {
-            return PartialView(_manufRepo.GetAll()
-                    .Skip((page - 1) * PageSize)
-                    .Take(PageSize)
-            );
-        }
-        public PartialViewResult CreateManufacturer()
-        {
-            return PartialView("EditManufacturer", new ManufacturerViewModel());
-        }
-        public PartialViewResult EditManufacturer(int manId)
-        {
-            Manufacturer man = _manufRepo.Get(manId);
-            return PartialView(new ManufacturerViewModel() { ManufacturerId = man.ManufacturerId, ManufacturerName = man.ManufacturerName });
-        }
+
+        public async Task<PartialViewResult> ManufacturersSummary(int page = 1) => PartialView((await _unitOfWork.MansRepo.GetAllAsync()).OrderBy(i => i.ManufacturerId).Skip((page - 1) * PageSize).Take(PageSize));
+
+
+        [Authorize(Roles = "AppManager")]
+        public PartialViewResult CreateManufacturer() => PartialView("EditManufacturer", new ManufacturerVM());
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<PartialViewResult> EditManufacturer(int manId) => PartialView(await _unitOfWork.MansRepo.GetAsync(manId));
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditManufacturer(ManufacturerViewModel manufacturerVM)
+        public async Task<ActionResult> EditManufacturer(ManufacturerVM manufacturerVM)
         {
             if (ModelState.IsValid)
             {
-                Manufacturer man = _manufRepo.Get(manufacturerVM.ManufacturerId);
-                if (man == null)
-                    man = new Manufacturer();
-                man.ManufacturerName = manufacturerVM.ManufacturerName;
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    ManufacturerVM added = null;
+                    if (manufacturerVM.ManufacturerId > 0 && await _unitOfWork.MansRepo.GetAsync(manufacturerVM.ManufacturerId) != null)
+                        _unitOfWork.MansRepo.CreateOrUpdate(manufacturerVM);
+                    else
+                        added = _unitOfWork.MansRepo.Add(manufacturerVM);
 
-                _manufRepo.CreateOrUpdate(man);
-                TempData["message"] = $"{man.ManufacturerName} successfully saved.";
+                    _unitOfWork.Save();
+                    trans.Complete();
+                }
+                TempData["message"] = $"{manufacturerVM.ManufacturerName} successfully saved.";
                 return new JavaScriptResult() { Script = "$('#manufacturerModal').modal('hide');window.location.href = '/Admin/Manufacturers';" };
             }
             else
                 return PartialView("EditManufacturer", manufacturerVM);
         }
-        public ActionResult DeleteManufacturer(int manId)
-        {
-            Manufacturer man = _manufRepo.Get(manId);
-            if (man != null)
-                return PartialView(man);
-            return HttpNotFound();
-        }
+
+        [Authorize(Roles = "AppManager")]
+        public async Task<ActionResult> DeleteManufacturer(int manId) => PartialView(await _unitOfWork.MansRepo.GetAsync(manId));
+
+        [Authorize(Roles = "AppManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteManufacturer(Manufacturer manufacturer)
+        public async Task<ActionResult> DeleteManufacturer(ManufacturerVM manVM)
         {
             try
             {
-                TempData["message"] = $"{manufacturer.ManufacturerName} successfully deleted.";
-                _manufRepo.Delete(_manufRepo.Get(manufacturer.ManufacturerId));
+                using (var trans = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    var deleted = await _unitOfWork.MansRepo.DeleteAsync(manVM);
+                    TempData["message"] = $"{deleted.ManufacturerName} successfully deleted.";
+                    _unitOfWork.Save();
+                    trans.Complete();
+                }
                 return RedirectToAction("Manufacturers");
             }
             catch (ApplicationException ex)
@@ -362,6 +386,7 @@ namespace InternetShop.WebUI.Controllers
             }
         }
         #endregion
+
 
     }
 }

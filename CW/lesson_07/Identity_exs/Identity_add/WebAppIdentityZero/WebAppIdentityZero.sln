@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppIdentityZero", "WebAppIdentityZero\WebAppIdentityZero.csproj", "{688C5A3C-5AA0-43AE-A80D-FDC08F90C25A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Step.Identity", "..\Step.Identity\Step.Identity.csproj", "{8447F73E-F8B7-4629-AF0E-0FCAAB18B0C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{688C5A3C-5AA0-43AE-A80D-FDC08F90C25A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{688C5A3C-5AA0-43AE-A80D-FDC08F90C25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{688C5A3C-5AA0-43AE-A80D-FDC08F90C25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{688C5A3C-5AA0-43AE-A80D-FDC08F90C25A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8447F73E-F8B7-4629-AF0E-0FCAAB18B0C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8447F73E-F8B7-4629-AF0E-0FCAAB18B0C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8447F73E-F8B7-4629-AF0E-0FCAAB18B0C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8447F73E-F8B7-4629-AF0E-0FCAAB18B0C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

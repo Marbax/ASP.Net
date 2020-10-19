@@ -21,7 +21,7 @@ namespace InternetShop.WebUI
 
             //ControllerBuilder.Current.SetControllerFactory(new NinjectControllerFactory());
             //ModelBinders.Binders.Add(typeof(Cart), new CartModelBinder());
-            DependencyResolver.SetResolver(new NinjectDependencyResolver());
+            DependencyResolver.SetResolver(new InternetShop.BLL.Infrastructure.NinjectDependencyResolver());
         }
     }
 }

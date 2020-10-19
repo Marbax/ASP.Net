@@ -1,4 +1,4 @@
-﻿@model InternetShop.Domain.Entities.Manufacturer
+﻿@model InternetShop.BLL.Models.UIModels.ManufacturerVM
 
 @using (Html.BeginForm())
 {
@@ -20,6 +20,9 @@
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.ManufacturerName)
+                    </dd>
+                    <dd>
+                        Goods referenced @Model.Goods.Count()
                     </dd>
                 </dl>
             </form>

@@ -1,6 +1,7 @@
-﻿@using InternetShop.WebUI.Models
-@using InternetShop.Domain.Entities
-@model GoodsListViewModel
+﻿@using InternetShop.BLL.Models.UIModels
+@using Microsoft.AspNet.Identity
+
+@model GoodsListVM
 
 @{
     ViewBag.Title = "Goods";
@@ -21,10 +22,14 @@
     </div>
 </div>
 
-@Ajax.ActionLink("Create New", "CreateGood", null, new AjaxOptions { UpdateTargetId = "goodModalDialog" }, new { @class = "btn btn-sm btn-success m-1", data_toggle = "modal", data_target = "#goodModal" })
+@if (Request.IsAuthenticated && User.IsInRole("AppManager"))
+{
+    @Ajax.ActionLink("Create New", "CreateGood", null, new AjaxOptions { UpdateTargetId = "goodModalDialog" }, new { @class = "btn btn-sm btn-success m-1", data_toggle = "modal", data_target = "#goodModal" })
+}
 
 @using (Html.BeginForm("Goods", "Admin", FormMethod.Post))
-{<div class="d-flex justify-content-start m-2">
+{
+    <div class="d-flex justify-content-start m-2">
 
         @Html.AntiForgeryToken()
 

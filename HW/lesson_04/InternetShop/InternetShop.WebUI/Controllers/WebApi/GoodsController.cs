@@ -1,17 +1,12 @@
 ﻿using InternetShop.Domain.Abstract;
 using InternetShop.Domain.Concrete;
 using InternetShop.Domain.Entities;
-using InternetShop.WebUI.Models;
 using InternetShop.WebUI.Models.WebApiViewModels;
 using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -151,13 +146,14 @@ namespace InternetShop.WebUI.Controllers.WebApi
 
             var catsIds = goods.Where(g => g.CategoryId > 0).Select(g => (int)g.CategoryId).Distinct().ToList();
             if (catsIds.Count < 1)
-                return BadRequest($"There no Categories for Manufacturer with id = {id}.");
+                return BadRequest($"There is no Categories for Manufacturer with id = {id}.");
 
             var catPredicate = PredicateBuilder.New<Category>();
             var catPred = PredicateBuilder.New<Category>();
             catPred.And(i => catsIds.Contains(i.CategoryId));
             catPredicate.Extend(catPred, PredicateOperator.Or);
-            var cats = await _catRepo.GetAsync(catPredicate).ToListAsync();
+
+            var cats = await _catRepo.GetAsync(catPredicate).OrderBy(i => i.CategoryId).ToListAsync();
             return Ok(cats.Select(i => new CategoryApiVM(i)));
         }
 
@@ -183,10 +179,12 @@ namespace InternetShop.WebUI.Controllers.WebApi
                 if (good.Price != default)
                     current.Price = good.Price;
 
+                // bad idea to edit virtuals
+                /*
                 if (good.Photos.Count > 0)
                     Parallel.ForEach(good.Photos, (p) => _photosRepo.CreateOrUpdate(new Photo() { GoodId = current.GoodId, PhotoPath = p }));
-
-                await _goodsRepo.CreateOrUpdateAsync(current);
+                */
+                _goodsRepo.CreateOrUpdate(current);
             }
             catch (Exception ex)
             {
@@ -209,17 +207,18 @@ namespace InternetShop.WebUI.Controllers.WebApi
                 GoodCount = good.GoodCount,
                 Price = good.Price,
             };
-            if (good.CategoryId > 0)
-                newGood.CategoryId = good.CategoryId;
-            if (good.ManufacturerId > 0)
-                newGood.ManufacturerId = good.ManufacturerId;
+            //if (good.CategoryId > 0)
+            newGood.CategoryId = good.CategoryId ?? null;
+            //if (good.ManufacturerId > 0)
+            newGood.ManufacturerId = good.ManufacturerId ?? null;
 
+            var added = _goodsRepo.Add(newGood);
 
-            var added = await _goodsRepo.AddAsync(newGood);
-
+            // bad idea to edit virtuals
+            /*
             if (good.Photos.Count > 0)
                 Parallel.ForEach(good.Photos, (p) => _photosRepo.CreateOrUpdate(new Photo() { GoodId = added.GoodId, PhotoPath = p }));
-
+            */
             return CreatedAtRoute("API Default", new { id = added.GoodId }, new GoodApiVM(added));
         }
 
@@ -233,21 +232,20 @@ namespace InternetShop.WebUI.Controllers.WebApi
 
             try
             {
-                Good deleted = await _goodsRepo.DeleteAsync(good);
+                Good deleted = _goodsRepo.Delete(good);
 
-                int gID = deleted.GoodId;
-                _goodsRepo.Delete(_goodsRepo.Get(gID));
-                var toDelPhotos = _photosRepo.Get(p => p.GoodId == gID || p.GoodId == null).ToList();
+                var toDelPhotos = await _photosRepo.GetAsync(p => p.GoodId == deleted.GoodId || p.GoodId == null).ToListAsync();
 
                 var imgsPath = toDelPhotos
                     .GroupBy(i => i.PhotoPath)
                     .Select(i => i.First())
-                    .Where(p => _photosRepo.Get(i => i.PhotoPath == p.PhotoPath && i.Good != null).Count() == 0)
+                    .Where(p => _photosRepo.Get(i => i.PhotoPath == p.PhotoPath && i.Good != null).Count() <= 1)
                     .Select(i => i.PhotoPath)
                     .ToList();
 
-                toDelPhotos.ForEach(p => _photosRepo.Delete(p));
-                imgsPath.ForEach(i => System.IO.File.Delete(_imgDir + i));
+                toDelPhotos.Select(i => i.PhotoId).ToList().ForEach((i) => _photosRepo.Delete(_photosRepo.Get(i))); // doesnt want to work asyncy
+
+                Parallel.ForEach(imgsPath, i => System.IO.File.Delete(_imgDir + i));
 
                 return Ok(new { DeletedGood = new GoodApiVM(deleted), Message = "Good successfully deleted.", StatusCode = 200 });
             }
@@ -256,5 +254,6 @@ namespace InternetShop.WebUI.Controllers.WebApi
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

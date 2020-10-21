@@ -1,0 +1,57 @@
+@model CoreShop.WebUI.Models.GoodEditVM;
+
+@using (Html.BeginForm("Edit","Good",Model,FormMethod.Post,true,new {@class = "form justify-content-center"}))
+{
+    
+    @Html.AntiForgeryToken();
+
+    <div class="form-group row"  >
+        @Html.LabelFor(Model=>Model.GoodId, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.DisplayFor(Model=>Model.GoodId, new {@class ="form-control col"})
+        </div>
+    </div>
+
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.GoodName, new {@class = "control-label col-md-4"}) 
+        <div>
+            @Html.EditorFor(Model=>Model.GoodName, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.GoodName,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.Price, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Price, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Price,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.GoodCount, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.GoodCount, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.GoodCount,"", new {@class = "text-danger"})
+        </div>
+    </div>
+
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.SelectCategory, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.DropDownListFor(Model=>Model.CategoryId,Model.SelectCategory, new {@class ="form-control col"})
+        </div>
+    </div>
+    
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.SelectManufacturer, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.DropDownListFor(Model=>Model.ManufacturerId,Model.SelectManufacturer, new {@class ="form-control col"})
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <input type="submit" value="Save" class="btn btn-large btn-primary">
+        @Html.ActionLink("Cancel","Index","Good",new{}, new{@class="btn btn-large btn-secondary"})
+    </div>
+}

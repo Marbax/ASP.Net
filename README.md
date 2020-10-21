@@ -76,3 +76,33 @@
 
 </p></details>
 
+<details><summary> 8.ASP.Net Unit of Work , AutoMapper , transaction scope. </summary><p>
+
+[ASP MVC unit , mapper , trans bad examples](CW/lesson_08/UnitOfWork "CW/lesson_08/UnitOfWork")
+
+[ASP MVC unit of work , mapper , trans almost working](HW/lesson_04/InternetShop "HW/lesson_04/InternetShop")
+
+</p></details>
+
+
+<details><summary> 9.ASP.Net core , signalR. </summary><p>
+
+```
+
+dotnet new sln // make solution with dir name
+dotnet new mvc -n Name // make mvc core project
+dotnet new classlib -n Name // make class lib project
+dotnet sln CoreShop.sln add **/*.csproj // Include all projects to solution
+dotnet add CoreShop.WebUI/CoreShop.WebUI.csproj reference CoreShop.DLL/CoreShop.DLL.csproj // add reference to UI on DLL
+// open in vs code project like workspace to add .vscode configs by vscode prompt
+
+```
+
+[ASP MVC core example](CW/lesson_09/coremvctest "CW/lesson_09/coremvctest")
+
+[ASP MVC signal R example](CW/lesson_09/SignalR "CW/lesson_09/SignalR")
+
+[ASP MVC core](HW/lesson_09/CoreShop "HW/lesson_09/CoreShop")
+
+</p></details>
+

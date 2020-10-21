@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CoreShop.Domain.Entities.Good>
+
+@{
+    ViewData["Title"] = "Good";
+}
+
+<div class="text-center Message alert-info rounded">@TempData["Message"]</div>
+
+@Html.ActionLink("Create new","CreateNew","Good",new {},new {@class="btn btn-large btn-info m-2"})
+
+<div class="table-responsive">
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Count</th>
+            <th>Category</th>
+            <th>Manufacturer</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.GoodId</td>
+                <td>@item.GoodName</td>
+                <td>@item.Price</td>
+                <td>@item.GoodCount</td>
+                <td>@(item.Category?.CategoryName)</td>
+                <td>@(item.Manufacturer?.ManufacturerName)</td>
+                <td>
+                    @Html.ActionLink("Edit","Edit","Good",new {id=item.GoodId},new {@class="btn btn-large btn-warning"})
+                    @using (Html.BeginForm("Remove","Good",new {id=item.GoodId},FormMethod.Post,false,new { @class="d-inline"})){
+                        <input type="submit" value="Remove" class="btn btn-large btn-danger d-inline">
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>     

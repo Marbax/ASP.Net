@@ -1,0 +1,27 @@
+@model CoreShop.Domain.Entities.Category;
+
+@using (Html.BeginForm("Edit","Category",Model,FormMethod.Post,true,new {@class = "form justify-content-center"}))
+{
+    
+    @Html.AntiForgeryToken();
+
+    <div class="form-group row"  >
+        @Html.LabelFor(Model=>Model.CategoryId, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.DisplayFor(Model=>Model.CategoryId, new {@class ="form-control col"})
+        </div>
+    </div>
+
+    <div class="form-group row" >
+        @Html.LabelFor(Model=>Model.CategoryName, new {@class = "control-label col-md-4"}) 
+        <div>
+            @Html.EditorFor(Model=>Model.CategoryName, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.CategoryName,"", new {@class = "text-danger"})
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <input type="submit" value="Save" class="btn btn-large btn-primary">
+        @Html.ActionLink("Cancel","Index","Category",new{}, new{@class="btn btn-large btn-secondary"})
+    </div>
+}

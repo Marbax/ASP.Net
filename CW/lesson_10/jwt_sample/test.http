@@ -1,0 +1,9 @@
+# GET https://localhost:5001/users
+
+POST https://localhost:5001/users/authenticate
+Content-Type: application/json
+
+{
+    "login":"ad",
+    "password": "admin"
+}

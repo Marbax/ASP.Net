@@ -1,9 +1,10 @@
-# GET https://localhost:5001/users
+GET https://localhost:5001/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkFsZXgiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE2MDQ0OTU5MjIsImV4cCI6MTYwNDQ5NjUyMiwiaWF0IjoxNjA0NDk1OTIyfQ.mU0COiWIihn3txuCGR9gfEgcaeEPzHELAnTeRI5lTH0
 
-POST https://localhost:5001/users/authenticate
-Content-Type: application/json
+# POST https://localhost:5001/users/authenticate
+# Content-Type: application/json
 
-{
-    "login":"ad",
-    "password": "admin"
-}
+# {
+#     "login":"admin",
+#     "password": "admin"
+# }

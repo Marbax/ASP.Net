@@ -1,0 +1,59 @@
+@model CoreShop.Domain.Entities.User;
+
+@using (Html.BeginForm("Edit", "User", Model, FormMethod.Post, true, new { @class = "form justify-content-center" }))
+{
+
+    @Html.AntiForgeryToken();
+
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Id, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.DisplayFor(Model=>Model.Id, new {@class ="form-control col"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Token, new {@class = "control-label col-md-4"})
+        <div class="form-control col h-auto text-break">
+            @Html.DisplayFor(Model=>Model.Token, new {@class ="text-break w-75"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Role, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Role, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Role,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Login, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Login, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Login,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Password, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Password, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Password,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Name, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Name, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Name,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(Model=>Model.Lastname, new {@class = "control-label col-md-4"})
+        <div>
+            @Html.EditorFor(Model=>Model.Lastname, new {@class ="form-control col"})
+            @Html.ValidationMessageFor(Model=>Model.Lastname,"", new {@class = "text-danger"})
+        </div>
+    </div>
+    <div class="form-actions">
+        <input type="submit" value="Save" class="btn btn-large btn-primary">
+        @Html.ActionLink("Cancel","Index","User",new{}, new{@class="btn btn-large btn-secondary"})
+    </div>
+}

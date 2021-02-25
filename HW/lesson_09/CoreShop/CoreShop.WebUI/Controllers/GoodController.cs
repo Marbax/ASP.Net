@@ -76,7 +76,11 @@ namespace CoreShop.WebUI.Controllers
                 return RedirectToAction("Index");
             }
             else
+            {
+                gvm.Categories = await _cRepo.GetAllAsync().ToListAsync();
+                gvm.Manufacturers = await _mRepo.GetAllAsync().ToListAsync();
                 return View(gvm);
+            }
         }
 
         [HttpPost]

@@ -1,0 +1,17 @@
+# GET https://localhost:5001/api/User/getusers
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik5payIsInJvbGUiOiJhZG1pbiIsIm5iZiI6MTYwNDQ5NDY1OCwiZXhwIjoxNjM2MDMwNjU4LCJpYXQiOjE2MDQ0OTQ2NTh9.fA0uNihcyyRD1Flf8A4n3xYKOy_M3E362z0I_NWJcxc
+
+GET https://localhost:5001/api/Category/GetAll
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBlZHJvIiwicm9sZSI6Im1hbmFnZXIiLCJuYW1laWQiOiI0IiwibmJmIjoxNjA0NDk3MjE1LCJleHAiOjE2MzYwMzMyMTUsImlhdCI6MTYwNDQ5NzIxNX0.D_LUXDFxRa4fYoht4ryK8LjbDPePYuMXXAinq7VhTGk
+
+
+# POST https://localhost:5001/api/User/authenticate
+# Content-Type: application/json
+
+# {
+#     "login":"pedro",
+#     "name":"null",
+#     "lastname":"null",
+#     "Role": "null",
+#     "password": "qwerty"
+# }
